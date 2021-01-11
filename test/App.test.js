@@ -10,16 +10,14 @@ contract('App Test', async ([owner, investor]) => {
     before(async () => {
         token = await FakeToken.new();
         app = await App.new(token.address);
-
-        await token.transfer(app.address, toWei('100000'), { from: owner });
         await token.transfer(investor, toWei('1000'), { from: owner });
     });
 
-    it('should have a name', async () => {
+    it('should contract have a name', async () => {
         const name = await app.name();
         assert.equal(name, 'P2P Lending Dapp');
     });
-    it('should have funds', async () => {
+    it('should investor has funds', async () => {
         const balance = await token.balanceOf(investor);
         assert.equal(balance, toWei('1000'));
     });
@@ -33,6 +31,14 @@ contract('App Test', async ([owner, investor]) => {
 
             const balanceAfter = await token.balanceOf(investor);
             assert.equal(balanceAfter, toWei('0'));
+
+            const stakingBalance = await app.stakingBalance(investor);
+            assert.equal(stakingBalance, toWei('1000'), 'staking balance is not correct');
+        });
+        it('should withdraw', async () => {
+            await app.widthdraw(toWei('100'), { from: investor });
+            const balanceAfterWithdraw = await token.balanceOf(investor);
+            assert.equal(balanceAfterWithdraw, toWei('100'));
         });
     });
 });
