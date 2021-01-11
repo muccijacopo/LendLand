@@ -1,0 +1,27 @@
+{
+  "name": "p2p-lending",
+  "version": "1.0.0",
+  "description": "P2P Lending Dapp",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muccijacopo/p2p-lending.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muccijacopo/p2p-lending/issues"
+  },
+  "homepage": "https://github.com/muccijacopo/p2p-lending#readme",
+  "devDependencies": {
+    "truffle": "^5.1.61"
+  }
+}
