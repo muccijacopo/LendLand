@@ -3,9 +3,10 @@
         P2P LENDING
     </h1>
     <p>{{ account }}</p>
-    <h3>Balance: {{ balance }} (FT)</h3>
+    <h3>Deposit: {{ balance }} (ETH)</h3>
 
-    <button @click="deposit()">Deposit</button>
+    <button @click="deposit()">Deposit</button><br />
+    <button @click="withdraw()">Withdraw</button>
 </template>
 
 <script lang="ts">
@@ -30,6 +31,11 @@ export default defineComponent({
     methods: {
         deposit() {
             console.log('deposit');
+            Web3Service.deposit(1);
+        },
+        withdraw() {
+            console.log('widthdraw');
+            // Web3Service.withdraw(1);
         },
     },
 });
@@ -49,5 +55,8 @@ body {
     text-align: center;
     height: 100%;
     color: #ffffff;
+}
+button {
+    margin-bottom: 1rem;
 }
 </style>
