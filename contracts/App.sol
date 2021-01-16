@@ -38,7 +38,7 @@ contract App {
         // hasStaked[msg.sender] = true;
     }
 
-    function withdraw() public payable returns (uint updatedBalance) {
+    function withdraw(address payable _to) public payable returns (uint updatedBalance) {
         // address payable withdrawer = msg.sender;
         // uint withdrawValue = msg.value;
         // uint balance = balances[withdrawer];
@@ -47,7 +47,8 @@ contract App {
         // uint balance = balances[msg.sender];
         // require(msg.value <= 0, "Withdraw value cannot be 0");
         // require(balance >= msg.value, "Not enough funds");
-        msg.sender.transfer(msg.value);
+        _to.transfer(msg.value);
+        require(balances[msg.sender] > msg.value, "Not enough funds");
         balances[msg.sender] -= msg.value;
         return balances[msg.sender];
     }
