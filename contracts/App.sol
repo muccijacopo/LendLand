@@ -35,7 +35,7 @@ contract App {
     function withdraw(uint _amount) public {
         address payable withdrawer = msg.sender;
         uint balance = balances[withdrawer];
-        require(balance > 0, "Widtdraw cannot be 0");
+        require(balance <= 0, "Widtdraw cannot be 0");
         require(balance >= _amount, "Not enough funds");
         // fakeToken.transfer(msg.sender, _amount);
 

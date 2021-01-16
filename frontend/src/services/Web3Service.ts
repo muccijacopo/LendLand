@@ -43,6 +43,7 @@ class Web3Service {
 
     async withdraw(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
+        console.log(amountWei);
         // this.web3.eth.sendTransaction;
         await this.bank.methods.withdraw(amountWei).call();
     }
