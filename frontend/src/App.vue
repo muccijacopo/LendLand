@@ -29,11 +29,11 @@ export default defineComponent({
         this.balance = await Web3Service.getBalance();
     },
     methods: {
-        deposit() {
-            Web3Service.deposit(this.value);
+        async deposit() {
+            this.balance = await Web3Service.deposit(this.value);
         },
-        withdraw() {
-            Web3Service.withdraw(this.value);
+        async withdraw() {
+            this.balance = await Web3Service.withdraw(this.value);
         },
     },
 });

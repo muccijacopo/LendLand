@@ -24,12 +24,13 @@ contract App {
         return balances[_address];
     }
 
-    function deposit(uint _amount) payable public {
+    function deposit(uint _amount) payable public returns(uint updatedBalance) {
         require(_amount > 0, "amount cannot be less than 0");
         
         // fakeToken.transferFrom(msg.sender, address(this), _amount);
         owner.transfer(msg.value);
         balances[msg.sender] = balances[msg.sender] + _amount;
+        return balances[msg.sender];
         // if (!hasStaked[msg.sender]) {
         //     stackers.push(msg.sender);
         // }
@@ -37,17 +38,18 @@ contract App {
         // hasStaked[msg.sender] = true;
     }
 
-    function withdraw() public payable {
+    function withdraw() public payable returns (uint updatedBalance) {
         // address payable withdrawer = msg.sender;
         // uint withdrawValue = msg.value;
         // uint balance = balances[withdrawer];
         // emit WithdrawAttempt(withdrawer, withdrawValue);
-        // require(balance <= 0, "Widtdraw cannot be 0");
-        // require(balance >= withdrawValue, "Not enough funds");
         // fakeToken.transfer(msg.sender, _amount);
-
+        // uint balance = balances[msg.sender];
+        // require(msg.value <= 0, "Withdraw value cannot be 0");
+        // require(balance >= msg.value, "Not enough funds");
         msg.sender.transfer(msg.value);
         balances[msg.sender] -= msg.value;
+        return balances[msg.sender];
     }
 
 }
