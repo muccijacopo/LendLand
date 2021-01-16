@@ -44,7 +44,9 @@ class Web3Service {
 
     async withdraw(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
-        await this.bank.methods.withdraw().send({ from: this.account, value: amountWei });
+        await this.bank.methods
+            .withdraw(this.account)
+            .send({ from: this.account, value: amountWei });
         return await this.getBalance();
     }
 
