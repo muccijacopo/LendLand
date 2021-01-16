@@ -32,15 +32,16 @@ contract App {
         // hasStaked[msg.sender] = true;
     }
 
-    function withdraw(uint _amount) public {
+    function withdraw() public payable {
         address payable withdrawer = msg.sender;
+        uint withdrawValue = msg.value;
         uint balance = balances[withdrawer];
         require(balance <= 0, "Widtdraw cannot be 0");
-        require(balance >= _amount, "Not enough funds");
+        require(balance >= withdrawValue, "Not enough funds");
         // fakeToken.transfer(msg.sender, _amount);
 
-        withdrawer.transfer(_amount);
-        balances[msg.sender] -= _amount;
+        withdrawer.transfer(withdrawValue);
+        balances[msg.sender] -= withdrawValue;
     }
 
 }

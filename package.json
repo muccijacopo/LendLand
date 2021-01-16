@@ -6,9 +6,8 @@
         "test": "test"
     },
     "scripts": {
-        "compile": "truffle compile",
-        "migrate": "truffle migrate",
-        "migrate:reset": "truffle migrate --reset",
+        "start": "truffle compile && truffle migrate",
+        "start:dev": "truffle compile && truffle migrate --reset",
         "test": "truffle test"
     },
     "repository": {
