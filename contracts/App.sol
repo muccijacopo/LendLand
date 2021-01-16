@@ -15,6 +15,10 @@ contract App {
         owner = msg.sender;
     }
 
+    function getBalanceByAddress(address _address) public view returns(uint balance) {
+        return balances[_address];
+    }
+
     function deposit(uint _amount) payable public {
         require(_amount > 0, "amount cannot be less than 0");
         
@@ -29,10 +33,13 @@ contract App {
     }
 
     function widthdraw(uint _amount) public {
-        uint balance = balances[msg.sender];
+        address payable withdrawer = msg.sender;
+        uint balance = balances[withdrawer];
         require(balance > 0, "Widtdraw cannot be 0");
         require(balance >= _amount, "Not enough funds");
         // fakeToken.transfer(msg.sender, _amount);
+
+        withdrawer.transfer(_amount);
         balances[msg.sender] -= _amount;
     }
 
