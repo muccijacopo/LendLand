@@ -4,9 +4,8 @@
     </h1>
     <p>{{ account }}</p>
     <h3>Deposit: {{ balance }} (ETH)</h3>
-
+    <input v-model="value" />
     <button @click="deposit()">Deposit</button><br />
-    <input v-model="withdrawValue" />
     <button @click="withdraw()">Withdraw</button>
 </template>
 
@@ -21,7 +20,7 @@ export default defineComponent({
         return {
             account: '0x0',
             balance: '',
-            withdrawValue: 0,
+            value: 1,
         };
     },
     async created() {
@@ -31,12 +30,10 @@ export default defineComponent({
     },
     methods: {
         deposit() {
-            console.log('deposit');
-            Web3Service.deposit(1);
+            Web3Service.deposit(this.value);
         },
         withdraw() {
-            console.log('widthdraw');
-            Web3Service.withdraw(this.withdrawValue);
+            Web3Service.withdraw(this.value);
         },
     },
 });
