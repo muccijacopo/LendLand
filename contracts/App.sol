@@ -7,9 +7,7 @@ contract App {
     address payable public owner;
     FakeToken public fakeToken;
 
-    mapping(address => uint) public stakingBalance;
-    mapping(address => bool) public hasStaked;
-    mapping(address => bool) public isStaking;
+    mapping(address => uint) public balances;
     address[] public stackers;
 
     constructor(FakeToken _fakeToken) public {
@@ -22,7 +20,7 @@ contract App {
         
         // fakeToken.transferFrom(msg.sender, address(this), _amount);
         owner.transfer(msg.value);
-        stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
+        balances[msg.sender] = balances[msg.sender] + _amount;
         // if (!hasStaked[msg.sender]) {
         //     stackers.push(msg.sender);
         // }
@@ -31,12 +29,11 @@ contract App {
     }
 
     function widthdraw(uint _amount) public {
-        uint balance = stakingBalance[msg.sender];
+        uint balance = balances[msg.sender];
         require(balance > 0, "Widtdraw cannot be 0");
-        require(balance >= _amount, "You don't have enough funds");
+        require(balance >= _amount, "Not enough funds");
         // fakeToken.transfer(msg.sender, _amount);
-        stakingBalance[msg.sender] -= _amount;
-        if (stakingBalance[msg.sender] == 0) isStaking[msg.sender] = false;
+        balances[msg.sender] -= _amount;
     }
 
 }
