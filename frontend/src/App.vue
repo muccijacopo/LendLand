@@ -4,7 +4,7 @@
     </h1>
     <p>{{ account }}</p>
     <h3>Deposit: {{ balance }} (ETH)</h3>
-    <input v-model="value" />
+    <input v-model="value" /> <br />
     <button @click="deposit()">Deposit</button><br />
     <button @click="withdraw()">Withdraw</button>
 </template>
@@ -53,6 +53,9 @@ body {
     text-align: center;
     height: 100%;
     color: #ffffff;
+}
+input {
+    margin-bottom: 1rem;
 }
 button {
     margin-bottom: 1rem;

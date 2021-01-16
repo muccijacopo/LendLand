@@ -37,12 +37,13 @@ class Web3Service {
 
     async deposit(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
-        this.web3.eth.sendTransaction;
+        // this.web3.eth.sendTransaction;
         await this.bank.methods.deposit(amountWei).send({ from: this.account, value: amountWei });
     }
 
     async withdraw(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
+        // this.web3.eth.sendTransaction;
         await this.bank.methods.withdraw().send({ from: this.account, value: amountWei });
     }
 
