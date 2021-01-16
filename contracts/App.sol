@@ -10,6 +10,11 @@ contract App {
     mapping(address => uint) public balances;
     address[] public stackers;
 
+    event WithdrawAttempt(
+        address from,
+        uint value
+    );
+
     constructor(FakeToken _fakeToken) public {
         fakeToken = _fakeToken;
         owner = msg.sender;
@@ -33,15 +38,16 @@ contract App {
     }
 
     function withdraw() public payable {
-        address payable withdrawer = msg.sender;
-        uint withdrawValue = msg.value;
-        uint balance = balances[withdrawer];
-        require(balance <= 0, "Widtdraw cannot be 0");
-        require(balance >= withdrawValue, "Not enough funds");
+        // address payable withdrawer = msg.sender;
+        // uint withdrawValue = msg.value;
+        // uint balance = balances[withdrawer];
+        // emit WithdrawAttempt(withdrawer, withdrawValue);
+        // require(balance <= 0, "Widtdraw cannot be 0");
+        // require(balance >= withdrawValue, "Not enough funds");
         // fakeToken.transfer(msg.sender, _amount);
 
-        withdrawer.transfer(withdrawValue);
-        balances[msg.sender] -= withdrawValue;
+        msg.sender.transfer(msg.value);
+        balances[msg.sender] -= msg.value;
     }
 
 }
