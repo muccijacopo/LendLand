@@ -32,7 +32,7 @@ contract App {
         // hasStaked[msg.sender] = true;
     }
 
-    function widthdraw(uint _amount) public {
+    function withdraw(uint _amount) public {
         address payable withdrawer = msg.sender;
         uint balance = balances[withdrawer];
         require(balance > 0, "Widtdraw cannot be 0");

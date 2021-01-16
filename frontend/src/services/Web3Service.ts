@@ -7,46 +7,45 @@ import Bank from '../../../build/contracts/App.json';
 
 class Web3Service {
     web3: Web3;
+    account: string;
     bank: Contract;
     token: Contract;
 
     async init() {
         if (this.isBrowserSupported()) {
             this.web3 = await this.enableEthProvider();
+            this.account = await this.getAccount();
             this.token = await this.createTokenContract();
             this.bank = await this.createBankContract();
         }
     }
 
-    async getAccounts() {
-        if (!this.web3) return [];
+    private async getAccount() {
         // const networkId = await this.web3.eth.net.getId();
         // console.log(networkId);
-        return await this.web3.eth.getAccounts();
+        const [account] = await this.web3.eth.getAccounts();
+        return account;
     }
 
     async getBalance() {
         if (!this.web3) return '';
-        const [account] = await this.web3.eth.getAccounts();
         // const balanceWei = (await this.token.methods.balanceOf(account).call()) as string;
-        const balanceWei = await this.bank.methods.stakingBalance(account).call();
+        const balanceWei = await this.bank.methods.getBalanceByAddress(this.account).call();
         const balance = this.web3.utils.fromWei(balanceWei);
         return balance;
     }
 
     async deposit(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
-        const [account] = await this.getAccounts();
         this.web3.eth.sendTransaction;
-        await this.bank.methods.deposit(amountWei).send({ from: account, value: amountWei });
+        await this.bank.methods.deposit(amountWei).send({ from: this.account, value: amountWei });
     }
 
-    // async withdraw(amount: number) {
-    //     const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
-    //     const [account] = await this.getAccounts();
-    //     this.web3.eth.sendTransaction;
-    //     await this.bank.methods.withdraw(amountWei).send({ from: account, value: amountWei });
-    // }
+    async withdraw(amount: number) {
+        const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
+        // this.web3.eth.sendTransaction;
+        await this.bank.methods.withdraw(amountWei).call();
+    }
 
     private async getNetworkId() {
         return (await this.web3.eth.net.getId()).toString();
@@ -76,7 +75,7 @@ class Web3Service {
     private async enableEthProvider() {
         const ethProvider = (window as any).ethereum;
         await ethProvider.enable();
-        return await new Web3(ethProvider);
+        return new Web3(ethProvider);
     }
 }
 

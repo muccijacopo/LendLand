@@ -6,6 +6,7 @@
     <h3>Deposit: {{ balance }} (ETH)</h3>
 
     <button @click="deposit()">Deposit</button><br />
+    <input v-model="withdrawValue" />
     <button @click="withdraw()">Withdraw</button>
 </template>
 
@@ -20,12 +21,12 @@ export default defineComponent({
         return {
             account: '0x0',
             balance: '',
+            withdrawValue: 0,
         };
     },
     async created() {
         await Web3Service.init();
-        const accounts = await Web3Service.getAccounts();
-        this.account = accounts[0];
+        this.account = await Web3Service.account;
         this.balance = await Web3Service.getBalance();
     },
     methods: {
@@ -35,7 +36,7 @@ export default defineComponent({
         },
         withdraw() {
             console.log('widthdraw');
-            // Web3Service.withdraw(1);
+            Web3Service.withdraw(this.withdrawValue);
         },
     },
 });
