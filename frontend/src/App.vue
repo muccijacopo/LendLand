@@ -1,9 +1,11 @@
 <template>
     <h1>
-        P2P LENDING
+        P2P Lending Dapp
     </h1>
+
+    <h3>{{ totalBalance }} (ETH)</h3>
     <p>{{ account }}</p>
-    <h3>Deposit: {{ balance }} (ETH)</h3>
+    <h3>You've deposited {{ balance }} (ETH)</h3>
     <input v-model="value" /> <br />
     <button @click="deposit()">Deposit</button><br />
     <button @click="withdraw()">Withdraw</button>
@@ -19,6 +21,7 @@ export default defineComponent({
     data() {
         return {
             account: '0x0',
+            totalBalance: '',
             balance: '',
             value: 1,
         };
@@ -31,9 +34,11 @@ export default defineComponent({
     methods: {
         async deposit() {
             this.balance = await Web3Service.deposit(this.value);
+            this.totalBalance = await Web3Service.getTotalBalance();
         },
         async withdraw() {
             this.balance = await Web3Service.withdraw(this.value);
+            this.totalBalance = await Web3Service.getTotalBalance();
         },
     },
 });

@@ -9,9 +9,10 @@ contract App {
     address payable public owner;
     FakeToken public fakeToken;
 
-
     mapping(address => uint) public balances;
-    address[] public stackers;
+    uint totalBalance;
+    address[] investors;
+    uint totalCustomers;
 
     event WithdrawAttempt(
         address indexed from,
@@ -21,6 +22,11 @@ contract App {
     constructor(FakeToken _fakeToken) public {
         fakeToken = _fakeToken;
         owner = msg.sender;
+        totalCustomers = 0;
+    }
+
+    function getTotalBalance() public view returns(uint total) {
+        return totalBalance;
     }
 
     function getBalanceByAddress(address _address) public view returns(uint balance) {
@@ -32,6 +38,7 @@ contract App {
         
         // fakeToken.transferFrom(msg.sender, address(this), _amount);
         balances[msg.sender] = balances[msg.sender] + msg.value;
+        totalBalance += msg.value;
         return balances[msg.sender];
         // if (!hasStaked[msg.sender]) {
         //     stackers.push(msg.sender);
@@ -51,6 +58,7 @@ contract App {
         require(balances[msg.sender] >= amount, "Not enough funds");
         msg.sender.transfer(amount);
         balances[msg.sender] = balances[msg.sender] - amount;
+        totalBalance -= amount;
         return balances[msg.sender];
     }
 

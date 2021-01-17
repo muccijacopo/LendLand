@@ -27,6 +27,11 @@ class Web3Service {
         return account;
     }
 
+    async getTotalBalance() {
+        const balance = await this.bank.methods.getTotalBalance().call();
+        return this.web3.utils.fromWei(balance, 'ether');
+    }
+
     async getBalance() {
         if (!this.web3) return '';
         // const balanceWei = (await this.token.methods.balanceOf(account).call()) as string;
