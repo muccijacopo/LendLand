@@ -38,16 +38,19 @@ class Web3Service {
     async deposit(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
         // this.web3.eth.sendTransaction;
-        await this.bank.methods.deposit(amountWei).send({ from: this.account, value: amountWei });
+        await this.bank.methods.deposit().send({ from: this.account, value: amountWei });
         return await this.getBalance();
     }
 
     async withdraw(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
-        await this.bank.methods
-            .withdraw(this.account)
-            .send({ from: this.account, value: amountWei });
-        return await this.getBalance();
+        // await this.bank.methods
+        //     .withdraw(this.account)
+        //     .send({ from: this.account, value: amountWei });
+        const updatedBalance = (await this.bank.methods
+            .withdraw(amountWei)
+            .call({ from: this.account })) as string;
+        return this.web3.utils.fromWei(updatedBalance, 'ether');
     }
 
     private async getNetworkId() {
