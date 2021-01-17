@@ -49,6 +49,7 @@ contract App {
         // require(msg.value <= 0, "Withdraw value cannot be 0");
         // require(balance >= msg.value, "Not enough funds");
         require(balances[msg.sender] >= amount, "Not enough funds");
+        msg.sender.transfer(amount);
         balances[msg.sender] = balances[msg.sender] - amount;
         return balances[msg.sender];
     }

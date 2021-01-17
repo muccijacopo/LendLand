@@ -49,8 +49,8 @@ class Web3Service {
         //     .send({ from: this.account, value: amountWei });
         const updatedBalance = (await this.bank.methods
             .withdraw(amountWei)
-            .call({ from: this.account })) as string;
-        return this.web3.utils.fromWei(updatedBalance, 'ether');
+            .send({ from: this.account })) as string;
+        return await this.getBalance();
     }
 
     private async getNetworkId() {
