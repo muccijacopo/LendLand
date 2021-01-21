@@ -1,21 +1,16 @@
-const App = artifacts.require('App');
+const Bank = artifacts.require('Bank');
 const FakeToken = artifacts.require('FakeToken');
 
 const toWei = (value) => {
     return web3.utils.toWei(value, 'ether');
 };
 
-contract('App Test', async (accounts) => {
-    let app, token;
+contract('Bank Test', async (accounts) => {
+    let bank, token;
     const investor = accounts[3];
     before(async () => {
         token = await FakeToken.new();
-        app = await App.new(token.address);
-    });
-
-    it('should contract have a name', async () => {
-        const name = await app.name();
-        assert.equal(name, 'P2P Lending Dapp');
+        bank = await Bank.new(token.address);
     });
 
     // describe('Deposit tokens', async () => {
@@ -37,20 +32,22 @@ contract('App Test', async (accounts) => {
     //         assert.equal(balanceAfterWithdraw, toWei('100'));
     //     });
     // });
+
     describe('Deposit/Withdraw', async () => {
         it('should deposit eth', async () => {
-            await app.deposit({ from: investor, value: toWei('2') });
-            const balance = await app.getBalanceByAddress(investor);
-            assert.equal(balance, toWei('2'));
+            const date = parseInt((Date.now() / 1000).toFixed(0));
+            await bank.deposit(date, { from: investor, value: toWei('2') });
+            const value = await bank.getDepositValueById(investor, 0);
+            assert.equal(value, toWei('2'));
         });
         it('should withdraw eth', async () => {
-            await app.withdraw(toWei('1'), { from: investor });
-            const balance = await app.getBalanceByAddress(investor);
-            assert.equal(balance, toWei('1'));
+            await bank.withdraw(0, { from: investor });
+            const value = await bank.getDepositValueById(investor, 0);
+            assert.equal(value, toWei('0'));
         });
-        it('should have balance', async () => {
-            const balance = await app.getBalanceByAddress(investor);
-            assert.equal(balance, toWei('1'));
-        });
+        // it('should have balance', async () => {
+        //     const balance = await app.getBalanceByAddress(investor);
+        //     assert.equal(balance, toWei('1'));
+        // });
     });
 });

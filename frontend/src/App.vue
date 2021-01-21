@@ -81,7 +81,7 @@ header {
 
 main {
     width: 60%;
-    margin: 0 auto;
+    margin: 30px auto;
     text-align: center;
 }
 
