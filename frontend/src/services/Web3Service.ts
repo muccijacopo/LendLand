@@ -3,7 +3,9 @@ import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 
 import FakeToken from '../../../build/contracts/FakeToken.json';
-import Bank from '../../../build/contracts/App.json';
+import Bank from '../../../build/contracts/Bank.json';
+import { Deposit } from '@/models/Deposit';
+import { toEth } from './Web3Utils';
 
 class Web3Service {
     web3: Web3;
@@ -32,33 +34,51 @@ class Web3Service {
         return this.web3.utils.fromWei(balance, 'ether');
     }
 
-    async getBalance() {
+    async getBalance(id: number) {
         if (!this.web3) return '';
         // const balanceWei = (await this.token.methods.balanceOf(account).call()) as string;
-        const balanceWei = await this.bank.methods.getBalanceByAddress(this.account).call();
+        const balanceWei = await this.bank.methods.getDepositValueById(this.account, id).call();
         const balance = this.web3.utils.fromWei(balanceWei);
+        console.log(balance);
         return balance;
     }
 
-    async getBalances() {
-        const [userBalance, totalBalance] = await Promise.all([
-            this.getBalance(),
-            this.getTotalBalance(),
-        ]);
-        return [userBalance, totalBalance];
+    async getDepositsByAccount(account: string = this.account) {
+        const response = await this.bank.methods.getDepositsByAccount(account).call();
+        const deposits: Deposit[] = [];
+        const AMOUNT = 0;
+        const DATE = 1;
+        for (let i = 0; i < response[AMOUNT].length; i++) {
+            const deposit = {
+                id: i,
+                value: toEth(response[AMOUNT][i]),
+                date: new Date(response[DATE][i] * 1000),
+            } as Deposit;
+            deposits.push(deposit);
+        }
+        console.log(deposits);
+        return deposits;
     }
+
+    // async getBalances() {
+    //     const [userBalance, totalBalance] = await Promise.all([
+    //         this.getBalance(),
+    //         this.getTotalBalance(),
+    //     ]);
+    //     return [userBalance, totalBalance];
+    // }
 
     async deposit(amount: number) {
         const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
         // this.web3.eth.sendTransaction;
-        await this.bank.methods.deposit().send({ from: this.account, value: amountWei });
-        return await this.getBalances();
+        const date = parseInt((Date.now() / 1000).toFixed(0));
+        await this.bank.methods.deposit(date).send({ from: this.account, value: amountWei });
+        return await this.getDepositsByAccount(this.account);
     }
 
-    async withdraw(amount: number) {
-        const amountWei = this.web3.utils.toWei(amount.toString(), 'ether');
-        await this.bank.methods.withdraw(amountWei).send({ from: this.account });
-        return await this.getBalances();
+    async withdraw(depositId: number) {
+        await this.bank.methods.withdraw(depositId).send({ from: this.account });
+        return await this.getDepositsByAccount(this.account);
     }
 
     private async getNetworkId() {

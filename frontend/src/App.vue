@@ -6,48 +6,60 @@
 
     <main>
         <h3 style="font-size: 5rem">{{ totalBalance }} ETH</h3>
-        <h3>Currently deposit: {{ balance }} ETH</h3>
         <input v-model="value" /> <br />
         <button @click="deposit()">Deposit</button><br />
-        <button @click="withdraw()">Withdraw</button>
+
+        <div class="grid">
+            <deposit-card
+                v-for="deposit in deposits"
+                :key="deposit.date"
+                :deposit="deposit"
+                @withdraw="withdraw($event)"
+            ></deposit-card>
+        </div>
     </main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+
 import Web3Service from './services/Web3Service';
+import DepositCard from './components/DepositCard.vue';
+import { Deposit } from './models/Deposit';
 
 export default defineComponent({
     name: 'App',
-    components: {},
+    components: {
+        DepositCard,
+    },
     data() {
         return {
             account: '0x0',
             totalBalance: '',
-            balance: '',
             value: 1,
+            deposits: [] as Deposit[],
         };
     },
     async created() {
         await Web3Service.init();
         this.account = await Web3Service.account;
-        const [updatedUserBalance, updatedTotalBalance] = await Web3Service.getBalances();
-        this.balance = updatedUserBalance;
-        this.totalBalance = updatedTotalBalance;
+        this.deposits = await Web3Service.getDepositsByAccount();
+        // const [updatedUserBalance, updatedTotalBalance] = await Web3Service.getBalances();
+        // this.balance = updatedUserBalance;
+        // this.totalBalance = updatedTotalBalance;
     },
     methods: {
         async deposit() {
-            const [updatedUserBalance, updatedTotalBalance] = await Web3Service.deposit(this.value);
-            this.balance = updatedUserBalance;
-            this.totalBalance = updatedTotalBalance;
+            this.deposits = await Web3Service.deposit(this.value);
+            // this.balance = updatedUserBalance;
+            // this.totalBalance = updatedTotalBalance;
             this.value = 1;
         },
-        async withdraw() {
-            const [updatedUserBalance, updatedTotalBalance] = await Web3Service.withdraw(
-                this.value
-            );
-            this.balance = updatedUserBalance;
-            this.totalBalance = updatedTotalBalance;
+        async withdraw(depositId: number) {
+            console.log(depositId);
+            this.deposits = await Web3Service.withdraw(depositId);
+            // this.balance = updatedUserBalance;
+            // this.totalBalance = updatedTotalBalance;
             this.value = 1;
         },
     },
@@ -83,6 +95,12 @@ main {
     width: 60%;
     margin: 30px auto;
     text-align: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
 input {

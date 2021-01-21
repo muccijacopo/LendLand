@@ -43,6 +43,8 @@ contract('Bank Test', async (accounts) => {
         it('should withdraw eth', async () => {
             await bank.withdraw(0, { from: investor });
             const value = await bank.getDepositValueById(investor, 0);
+            const deposits = await bank.getDepositsByAccount(investor);
+            console.log('deposits =>', deposits);
             assert.equal(value, toWei('0'));
         });
         // it('should have balance', async () => {

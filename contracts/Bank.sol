@@ -18,7 +18,7 @@ contract Bank {
         uint value;
         uint256 date;
     }
-    mapping(address => Deposit[]) deposits;
+    mapping(address => Deposit[]) public deposits;
 
     // event WithdrawAttempt(
     //     address indexed from,
@@ -41,6 +41,24 @@ contract Bank {
     function getDepositValueById(address _address, uint depositId) public view returns(uint value) {
         uint depositValue = deposits[_address][depositId].value;
         return depositValue;
+    }
+
+    // Not yet supported WTF
+    // function getDepositsByAccount(address _address) public view returns(Deposit[] memory) {
+    //     Deposit[] memory accountDeposits = deposits[_address];
+    //     return accountDeposits;
+    // }
+
+    function getDepositsByAccount(address _address) public view returns(uint[] memory, uint[] memory)  {
+        uint depositsNumber = deposits[_address].length;
+        uint[] memory values = new uint[](depositsNumber);
+        uint[] memory dates = new uint[](depositsNumber);
+        for(uint i = 0; i < depositsNumber; i ++) {
+            values[i] = deposits[_address][i].value;
+            dates[i] = deposits[_address][i].date;
+        }
+
+        return (values, dates);
     }
 
     function deposit(uint256 date) payable public {
@@ -68,5 +86,4 @@ contract Bank {
         // totalBalance -= amount;
         // return balances[msg.sender];
     }
-
 }
