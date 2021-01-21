@@ -55,18 +55,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-html {
+* {
+    box-sizing: border-box;
     margin: 0;
+}
+html {
     height: 100%;
 }
 body {
-    margin: 0;
     min-height: 100vh;
     background: #f2f2f2;
 }
 header {
     width: 100%;
-    padding: 0.5rem;
+    padding: 1rem;
     background: #181818;
     color: white;
     display: flex;
