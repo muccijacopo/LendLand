@@ -1,9 +1,12 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <p>Valore {{ deposit.value }}</p>
+            <p>Depositato {{ deposit.value }} ETH</p>
+            <p>Valore attuale ???</p>
             <p>Data {{ deposit.date }}</p>
-            <button @click="$emit('withdraw', deposit.id)">Withdraw</button>
+            <button @click="$emit('withdraw', deposit.id)" :disabled="deposit.value === '0'">
+                Withdraw
+            </button>
         </div>
     </div>
 </template>
@@ -23,6 +26,9 @@ export default defineComponent({
     border: 1px solid #f2f2f2;
     border-radius: 5px;
     padding: 1rem;
+    p {
+        margin-bottom: 0.5rem;
+    }
 }
 button {
     margin-top: 10px;

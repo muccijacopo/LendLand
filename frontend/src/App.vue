@@ -44,6 +44,7 @@ export default defineComponent({
         await Web3Service.init();
         this.account = await Web3Service.account;
         this.deposits = await Web3Service.getDepositsByAccount();
+        this.totalBalance = await Web3Service.getTotalBalance();
         // const [updatedUserBalance, updatedTotalBalance] = await Web3Service.getBalances();
         // this.balance = updatedUserBalance;
         // this.totalBalance = updatedTotalBalance;
@@ -52,14 +53,14 @@ export default defineComponent({
         async deposit() {
             this.deposits = await Web3Service.deposit(this.value);
             // this.balance = updatedUserBalance;
-            // this.totalBalance = updatedTotalBalance;
+            this.totalBalance = await Web3Service.getTotalBalance();
             this.value = 1;
         },
         async withdraw(depositId: number) {
             console.log(depositId);
             this.deposits = await Web3Service.withdraw(depositId);
             // this.balance = updatedUserBalance;
-            // this.totalBalance = updatedTotalBalance;
+            this.totalBalance = await Web3Service.getTotalBalance();
             this.value = 1;
         },
     },

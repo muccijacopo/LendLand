@@ -20,6 +20,8 @@ contract Bank {
     }
     mapping(address => Deposit[]) public deposits;
 
+    uint depositRatio = 1;
+
     // event WithdrawAttempt(
     //     address indexed from,
     //     uint256 value
@@ -49,6 +51,14 @@ contract Bank {
     //     return accountDeposits;
     // }
 
+    function compound(uint principal, uint date) internal view returns(uint) {
+        // uint updatedPrincipal = principal;
+        uint secondPassed = block.timestamp - date;
+        uint compounded = principal + (secondPassed * 100);
+        return compounded;
+        // return secondPassed;
+    }
+
     function getDepositsByAccount(address _address) public view returns(uint[] memory, uint[] memory)  {
         uint depositsNumber = deposits[_address].length;
         uint[] memory values = new uint[](depositsNumber);
@@ -66,6 +76,7 @@ contract Bank {
         
         Deposit memory newDeposit = Deposit(msg.sender, msg.value, date);
         deposits[msg.sender].push(newDeposit); 
+        totalBalance += msg.value;
 
         // fakeToken.transferFrom(msg.sender, address(this), _amount);
         // balances[msg.sender] = balances[msg.sender] + msg.value;
@@ -77,9 +88,12 @@ contract Bank {
         // require(balances[msg.sender] >= amount, "Not enough funds");
 
         uint256 value = deposits[msg.sender][depositId].value;
+        uint date = deposits[msg.sender][depositId].date;
         require(value > 0, "Not enough funds");
-        msg.sender.transfer(value);
+        uint compoundedValue = compound(value, date);
+        msg.sender.transfer(compoundedValue);
         deposits[msg.sender][depositId].value = 0;
+        totalBalance -= value;
 
         // msg.sender.transfer(amount);
         // balances[msg.sender] = balances[msg.sender] - amount;
