@@ -1,12 +1,12 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <p>Depositato {{ deposit.originalAmount }} ETH</p>
-            <p>Valore attuale {{ deposit.actualAmount }} ETH</p>
-            <p>Data {{ depositDate }}</p>
-            <button @click="$emit('withdraw', deposit.id)" :disabled="deposit.actualAmount === '0'">
+            <p>Richiesto {{ loan.amount }} ETH</p>
+            <p>Da restituire {{ loan.amountWithInterest }} ETH</p>
+            <p>Data {{ loanDate }}</p>
+            <!-- <button @click="$emit('withdraw', loan.id)" :disabled="loan.amountWithInterest === '0'">
                 Withdraw all
-            </button>
+            </button> -->
         </div>
     </div>
 </template>
@@ -14,19 +14,19 @@
 <script lang="ts">
 import Vue, { defineComponent, PropType } from 'vue';
 import { default as formatDate } from 'date-fns/format';
-import { Deposit } from '@/models/Deposit';
+import { Loan } from '@/models/Loan';
 export default defineComponent({
-    name: 'DepositCard',
+    name: 'LoanCard',
     props: {
-        deposit: {
-            type: Object as PropType<Deposit>,
+        loan: {
+            type: Object as PropType<Loan>,
             required: true,
         },
     },
     emits: ['withdraw'],
     computed: {
-        depositDate(): string {
-            return formatDate(this.deposit.date, 'dd/MM/yyyy HH:mm');
+        loanDate(): string {
+            return formatDate(this.loan.date, 'dd/MM/yyyy HH:mm');
         },
     },
 });
@@ -35,7 +35,7 @@ export default defineComponent({
 <style scoped lang="scss">
 .card {
     background: white;
-    border: 1px solid #047e1d;
+    border: 1px solid #ff5454;
     border-radius: 5px;
     padding: 1rem;
     p {

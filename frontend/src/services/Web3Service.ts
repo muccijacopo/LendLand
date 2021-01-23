@@ -5,7 +5,8 @@ import { AbiItem } from 'web3-utils';
 import FakeToken from '../../../build/contracts/FakeToken.json';
 import Bank from '../../../build/contracts/Bank.json';
 import { Deposit } from '@/models/Deposit';
-import { toEth } from './Web3Utils';
+import { toEth, toWei } from './Web3Utils';
+import { Loan } from '@/models/Loan';
 
 class Web3Service {
     web3: Web3;
@@ -46,18 +47,42 @@ class Web3Service {
     async getDepositsByAccount(account: string = this.account) {
         const response = await this.bank.methods.getDepositsByAccount(account).call();
         const deposits: Deposit[] = [];
-        const AMOUNT = 0;
-        const DATE = 1;
-        for (let i = 0; i < response[AMOUNT].length; i++) {
+        const ORIGINAL_AMOUNT = 0;
+        const ACTUAL_AMOUNT = 1;
+        const DATE = 2;
+        for (let i = 0; i < response[ORIGINAL_AMOUNT].length; i++) {
             const deposit = {
                 id: i,
-                value: toEth(response[AMOUNT][i]),
+                originalAmount: toEth(response[ORIGINAL_AMOUNT][i]),
+                actualAmount: toEth(response[ACTUAL_AMOUNT][i]),
                 date: new Date(response[DATE][i] * 1000),
             } as Deposit;
             deposits.push(deposit);
         }
-        console.log(deposits);
         return deposits;
+    }
+
+    async getLoansByAccount(account: string = this.account) {
+        const response = await this.bank.methods.getLoansByAccount(account).call();
+        const loans: Loan[] = [];
+        for (let i = 0; i < response[0].length; i++) {
+            const loan = {
+                id: i,
+                amount: toEth(response[0][i]),
+                amountWithInterest: toEth(response[1][i]),
+                date: new Date(response[2][i] * 1000),
+            } as Loan;
+            loans.push(loan);
+        }
+        return loans;
+    }
+
+    async getNewLoan(amount: number) {
+        const date = parseInt((Date.now() / 1000).toFixed(0));
+        await this.bank.methods
+            .requestLoan(toWei(amount.toString()), date)
+            .send({ from: this.account });
+        return await this.getLoansByAccount(this.account);
     }
 
     // async getBalances() {
