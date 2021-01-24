@@ -1,7 +1,15 @@
 <template>
-    <header>
-        <h1>P2P Lending Dapp</h1>
-        <p>{{ account }}</p>
+    <header class="navbar is-info">
+        <div class="navbar-brand">
+            <div class="navbar-item">
+                <h1>P2P Lending Dapp</h1>
+            </div>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <span>{{ account }}</span>
+            </div>
+        </div>
     </header>
 
     <main class="container content my-3">
@@ -116,28 +124,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-* {
-    box-sizing: border-box;
-    margin: 0;
-}
-html {
-    height: 100%;
-}
-body {
-    min-height: 100vh;
-    background: #f2f2f2;
-}
 header {
-    width: 100%;
-    padding: 1rem;
-    background: #181818;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    h1 {
+    .navbar-brand {
         font-size: 2rem;
     }
+}
+
+.container {
+    padding: 0 1rem;
 }
 
 .grid {
@@ -151,8 +145,5 @@ header {
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
-}
-button {
-    margin-bottom: 1rem;
 }
 </style>

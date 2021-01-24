@@ -1,5 +1,18 @@
 @import '~bulma';
 
+/* Resets */
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+// html {
+//     height: 100%;
+// }
+// body {
+//     min-height: 100vh;
+//     background: #f2f2f2;
+// }
+
 button {
     @extend .button;
 }
