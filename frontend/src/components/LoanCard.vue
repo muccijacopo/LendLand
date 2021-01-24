@@ -4,9 +4,9 @@
             <p>Richiesto {{ loan.amount }} ETH</p>
             <p>Da restituire {{ loan.amountWithInterest }} ETH</p>
             <p>Data {{ loanDate }}</p>
-            <!-- <button @click="$emit('withdraw', loan.id)" :disabled="loan.amountWithInterest === '0'">
-                Withdraw all
-            </button> -->
+            <button @click="$emit('repayLoan', loan.id)" :disabled="loan.isClosed">
+                Repay
+            </button>
         </div>
     </div>
 </template>
@@ -23,7 +23,7 @@ export default defineComponent({
             required: true,
         },
     },
-    emits: ['withdraw'],
+    emits: ['repayLoan'],
     computed: {
         loanDate(): string {
             return formatDate(this.loan.date, 'dd/MM/yyyy HH:mm');

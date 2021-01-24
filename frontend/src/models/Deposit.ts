@@ -1,6 +1,7 @@
 export interface Deposit {
     id: number;
-    originalAmount: string;
-    actualAmount: string;
+    amount: string;
+    amountWithInterest: string;
     date: Date;
+    isClosed: boolean;
 }

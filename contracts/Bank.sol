@@ -15,9 +15,9 @@ contract Bank {
 
     struct Deposit {
         address payable owner;
-        uint originalAmount;
+        uint amount;
         uint256 date;
-        bool closed;
+        bool isClosed;
     }
     mapping(address => Deposit[]) public deposits;
 
@@ -25,7 +25,7 @@ contract Bank {
         address payable owner;
         uint amount;
         uint date;
-        bool closed;
+        bool isClosed;
     }
     mapping (address => Loan[]) public loans;
 
@@ -43,7 +43,7 @@ contract Bank {
     }
 
     function getDepositValueById(address _address, uint depositId) public view returns(uint value) {
-        uint depositValue = deposits[_address][depositId].originalAmount;
+        uint depositValue = deposits[_address][depositId].amount;
         return depositValue;
     }
 
@@ -59,21 +59,24 @@ contract Bank {
         return amountWithInterest;
     }
 
-    function getDepositsByAccount(address _address) public view returns(uint[] memory, uint[] memory, uint[] memory)  {
+    function getDepositsByAccount(address _address) public view returns(uint[] memory, uint[] memory, uint[] memory, bool[] memory)  {
         uint depositsNumber = deposits[_address].length;
         uint[] memory originalAmounts = new uint[](depositsNumber);
-        uint[] memory actualAmounts = new uint[](depositsNumber);
+        uint[] memory amountsWithInterest = new uint[](depositsNumber);
         uint[] memory dates = new uint[](depositsNumber);
+        bool[] memory isClosedAry = new bool[](depositsNumber);
         for(uint i = 0; i < depositsNumber; i ++) {
-            uint originalAmount = deposits[_address][i].originalAmount;
+            uint originalAmount = deposits[_address][i].amount;
             uint date = deposits[_address][i].date;
-            uint actualAmount = deposits[_address][i].closed ? 0 : getAmountWithInterest(originalAmount, block.timestamp, date, 100);
+            bool isClosed = deposits[_address][i].isClosed;
+            uint amountWithInterest = getAmountWithInterest(originalAmount, block.timestamp, date, 100);
             originalAmounts[i] = originalAmount;
-            actualAmounts[i] = actualAmount;
+            amountsWithInterest[i] = amountWithInterest;
             dates[i] = date;
+            isClosedAry[i] = isClosed; 
         }
 
-        return (originalAmounts, actualAmounts, dates);
+        return (originalAmounts, amountsWithInterest, dates, isClosedAry);
     }
 
     function deposit(uint256 date) payable public {
@@ -90,35 +93,34 @@ contract Bank {
     }
 
     function withdraw(uint depositId) public {
-        // require(balances[msg.sender] >= amount, "Not enough funds");
-
-        uint256 value = deposits[msg.sender][depositId].originalAmount;
+        uint256 originalAmount = deposits[msg.sender][depositId].amount;
         uint date = deposits[msg.sender][depositId].date;
-        require(value > 0, "Not enough funds");
-        uint compoundedValue = getAmountWithInterest(value, block.timestamp, date, 100);
-        msg.sender.transfer(compoundedValue);
-        deposits[msg.sender][depositId].closed = true;
-        totalBalance -= value;
+        bool isClosed = deposits[msg.sender][depositId].isClosed;
+        require(originalAmount > 0, "Deposit is empty");
+        require(!isClosed, "Deposit is closed");
 
-        // msg.sender.transfer(amount);
-        // balances[msg.sender] = balances[msg.sender] - amount;
-        // totalBalance -= amount;
-        // return balances[msg.sender];
+        uint compoundedValue = getAmountWithInterest(originalAmount, block.timestamp, date, 100);
+        msg.sender.transfer(compoundedValue);
+        deposits[msg.sender][depositId].isClosed = true;
+        totalBalance -= compoundedValue;
     }
 
-    function getLoansByAccount(address account) public view returns(uint[] memory, uint[] memory, uint[] memory) {
+    function getLoansByAccount(address account) public view returns(uint[] memory, uint[] memory, uint[] memory, bool[] memory) {
         uint loansNumber = loans[account].length;
         uint[] memory originalAmounts = new uint[](loansNumber);
         uint[] memory amountsWithInterest = new uint[](loansNumber);
         uint[] memory dates = new uint[](loansNumber);
+        bool[] memory isClosedAry = new bool[](loansNumber);
         for (uint i = 0; i < loansNumber; i++) {
             uint originalAmount = loans[account][i].amount;
             uint date = loans[account][i].date;
+            bool isClosed = loans[account][i].isClosed;
             originalAmounts[i] = originalAmount;
-            amountsWithInterest[i] = getAmountWithInterest(originalAmount, block.timestamp, date, 100);
+            amountsWithInterest[i] = getAmountWithInterest(originalAmount, block.timestamp, date, 1000);
             dates[i] = date;
+            isClosedAry[i] = isClosed;
         }
-        return (originalAmounts, amountsWithInterest, dates);
+        return (originalAmounts, amountsWithInterest, dates, isClosedAry);
     }
 
     function requestLoan(uint amount, uint date) public {
@@ -129,7 +131,11 @@ contract Bank {
     }
 
     function repayLoan(uint loanId, uint date) public payable {
+        // uint originalAmount = loans[msg.sender][loanId].amount;
+        // uint loanDate = loans[msg.sender][loanId].date;
+        // uint amountWithInterest = getAmountWithInterest(originalAmount, loanDate, date, 1000);
+        // require(msg.value == amountWithIntest, "Need more money!");
         totalBalance += msg.value;
-        loans[msg.sender][loanId].closed = true;
+        loans[msg.sender][loanId].isClosed = true;
     }
 }

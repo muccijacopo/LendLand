@@ -1,10 +1,10 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <p>Depositato {{ deposit.originalAmount }} ETH</p>
-            <p>Valore attuale {{ deposit.actualAmount }} ETH</p>
+            <p>Depositato {{ deposit.amount }} ETH</p>
+            <p>Valore attuale {{ deposit.amountWithInterest }} ETH</p>
             <p>Data {{ depositDate }}</p>
-            <button @click="$emit('withdraw', deposit.id)" :disabled="deposit.actualAmount === '0'">
+            <button @click="$emit('withdraw', deposit.id)" :disabled="deposit.isClosed">
                 Withdraw all
             </button>
         </div>

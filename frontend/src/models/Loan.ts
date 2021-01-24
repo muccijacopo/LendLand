@@ -3,4 +3,5 @@ export interface Loan {
     amount: string;
     amountWithInterest: string;
     date: Date;
+    isClosed: boolean;
 }

@@ -7,6 +7,9 @@ import Bank from '../../../build/contracts/Bank.json';
 import { Deposit } from '@/models/Deposit';
 import { toEth, toWei } from './Web3Utils';
 import { Loan } from '@/models/Loan';
+import { format } from 'date-fns';
+
+const getDateInSeconds = () => parseInt(format(new Date(), 'X'));
 
 class Web3Service {
     web3: Web3;
@@ -47,15 +50,13 @@ class Web3Service {
     async getDepositsByAccount(account: string = this.account) {
         const response = await this.bank.methods.getDepositsByAccount(account).call();
         const deposits: Deposit[] = [];
-        const ORIGINAL_AMOUNT = 0;
-        const ACTUAL_AMOUNT = 1;
-        const DATE = 2;
-        for (let i = 0; i < response[ORIGINAL_AMOUNT].length; i++) {
+        for (let i = 0; i < response[0].length; i++) {
             const deposit = {
                 id: i,
-                originalAmount: toEth(response[ORIGINAL_AMOUNT][i]),
-                actualAmount: toEth(response[ACTUAL_AMOUNT][i]),
-                date: new Date(response[DATE][i] * 1000),
+                amount: toEth(response[0][i]),
+                amountWithInterest: toEth(response[1][i]),
+                date: new Date(response[2][i] * 1000),
+                isClosed: response[3][i],
             } as Deposit;
             deposits.push(deposit);
         }
@@ -64,6 +65,7 @@ class Web3Service {
 
     async getLoansByAccount(account: string = this.account) {
         const response = await this.bank.methods.getLoansByAccount(account).call();
+        console.log(response);
         const loans: Loan[] = [];
         for (let i = 0; i < response[0].length; i++) {
             const loan = {
@@ -71,6 +73,7 @@ class Web3Service {
                 amount: toEth(response[0][i]),
                 amountWithInterest: toEth(response[1][i]),
                 date: new Date(response[2][i] * 1000),
+                isClosed: response[3][i],
             } as Loan;
             loans.push(loan);
         }
@@ -83,6 +86,15 @@ class Web3Service {
             .requestLoan(toWei(amount.toString()), date)
             .send({ from: this.account });
         return await this.getLoansByAccount(this.account);
+    }
+
+    async repayLoan(loanId: number, amount: string) {
+        const date = getDateInSeconds();
+        console.log(date);
+        this.bank.methods
+            .repayLoan(loanId, date)
+            .send({ from: this.account, value: toWei(amount) });
+        return await this.getLoansByAccount();
     }
 
     // async getBalances() {

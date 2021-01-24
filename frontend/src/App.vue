@@ -5,7 +5,7 @@
     </header>
 
     <main>
-        <h3 style="font-size: 5rem">{{ totalBalance }} ETH</h3>
+        <h3 style="font-size: 4rem">{{ totalBalance }} ETH</h3>
         <input v-model="value" /> <br />
         <button @click="invest()">Invest</button><br />
         <button @click="newLoan()">New Loan</button>
@@ -25,7 +25,7 @@
                 v-for="loan in loans"
                 :key="loan.date"
                 :loan="loan"
-                @withdraw="withdraw($event)"
+                @repayLoan="repayLoan($event)"
             ></loan-card>
         </div>
     </main>
@@ -82,6 +82,12 @@ export default defineComponent({
             this.loans = await Web3Service.getNewLoan(this.value);
             this.totalBalance = await Web3Service.getTotalBalance();
             this.value = 1;
+        },
+        async repayLoan(loanId: number) {
+            const loan = this.loans.find(l => l.id === loanId);
+            if (!loan) return;
+            this.loans = await Web3Service.repayLoan(loanId, loan.amountWithInterest);
+            this.totalBalance = await Web3Service.getTotalBalance();
         },
     },
 });
