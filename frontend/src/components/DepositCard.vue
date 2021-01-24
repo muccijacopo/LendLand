@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-body">
+        <div class="card-content">
             <p>Depositato {{ deposit.amount }} ETH</p>
             <p>Valore attuale {{ deposit.amountWithInterest }} ETH</p>
             <p>Data {{ depositDate }}</p>
@@ -9,7 +9,7 @@
                 @click="$emit('withdraw', deposit.id)"
                 :disabled="deposit.isClosed"
             >
-                Withdraw all
+                Withdraw
             </button>
         </div>
     </div>
@@ -38,15 +38,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .card {
-    background: white;
-    border: 1px solid #047e1d;
-    border-radius: 5px;
-    padding: 1rem;
-    p {
-        margin-bottom: 0.5rem;
-    }
-}
-button {
-    margin-top: 10px;
+    border: 1px solid #4bbf4b;
 }
 </style>

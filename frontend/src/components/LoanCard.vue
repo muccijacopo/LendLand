@@ -1,11 +1,11 @@
 <template>
     <div class="card">
-        <div class="card-body">
+        <div class="card-content">
             <p>Richiesto {{ loan.amount }} ETH</p>
             <p>Da restituire {{ loan.amountWithInterest }} ETH</p>
             <p>Data {{ loanDate }}</p>
             <button @click="$emit('repayLoan', loan.id)" :disabled="loan.isClosed">
-                Repay
+                Ripaga
             </button>
         </div>
     </div>
@@ -34,13 +34,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .card {
-    background: white;
-    border: 1px solid #ff5454;
-    border-radius: 5px;
-    padding: 1rem;
-    p {
-        margin-bottom: 0.5rem;
-    }
+    border: 1px solid #981c1c;
 }
 button {
     margin-top: 10px;

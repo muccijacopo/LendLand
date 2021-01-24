@@ -4,13 +4,27 @@
         <p>{{ account }}</p>
     </header>
 
-    <main>
-        <h3 style="font-size: 4rem">{{ totalBalance }} ETH</h3>
-        <input v-model="value" /> <br />
-        <button @click="invest()">Invest</button><br />
-        <button @click="newLoan()">New Loan</button>
-
-        <h1>I tuoi investimenti</h1>
+    <main class="container content my-3">
+        <h1 class="has-text-centered is-size-1">{{ totalBalance }} ETH</h1>
+        <div class="is-flex is-justify-content-center">
+            <button
+                class="mr-2"
+                @click="selected = 'deposit'"
+                :class="{ 'is-primary': selected === 'deposit' }"
+            >
+                Deposita</button
+            ><br />
+            <button @click="selected = 'loan'" :class="{ 'is-danger': selected === 'loan' }">
+                Richiedi
+            </button>
+        </div>
+        <div class="field my-3">
+            <!-- <label class="label">Desposita o richiedi ETH</label> -->
+            <div class="control">
+                <input class="input" v-model="value" @keyup.enter="onEnter" />
+            </div>
+        </div>
+        <h3 v-if="deposits.length">I tuoi investimenti</h3>
         <div class="grid">
             <deposit-card
                 v-for="deposit in deposits"
@@ -19,7 +33,7 @@
                 @withdraw="withdraw($event)"
             ></deposit-card>
         </div>
-        <h1>I tuoi prestiti</h1>
+        <h3 v-if="loans.length">I tuoi prestiti</h3>
         <div class="grid">
             <loan-card
                 v-for="loan in loans"
@@ -53,6 +67,7 @@ export default defineComponent({
             value: 1,
             deposits: [] as Deposit[],
             loans: [] as Loan[],
+            selected: null as 'deposit' | 'loan' | null,
         };
     },
     async created() {
@@ -66,6 +81,13 @@ export default defineComponent({
         // this.totalBalance = updatedTotalBalance;
     },
     methods: {
+        onEnter() {
+            if (this.selected === 'deposit') {
+                this.invest();
+            } else if (this.selected === 'loan') {
+                this.newLoan();
+            }
+        },
         async invest() {
             this.deposits = await Web3Service.deposit(this.value);
             // this.balance = updatedUserBalance;
@@ -118,12 +140,6 @@ header {
     }
 }
 
-main {
-    width: 60%;
-    margin: 30px auto;
-    text-align: center;
-}
-
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -131,8 +147,10 @@ main {
     margin: 20px 0;
 }
 
-input {
-    margin-bottom: 1rem;
+.field {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
 }
 button {
     margin-bottom: 1rem;
