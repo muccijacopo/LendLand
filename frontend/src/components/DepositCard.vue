@@ -4,7 +4,11 @@
             <p>Depositato {{ deposit.amount }} ETH</p>
             <p>Valore attuale {{ deposit.amountWithInterest }} ETH</p>
             <p>Data {{ depositDate }}</p>
-            <button @click="$emit('withdraw', deposit.id)" :disabled="deposit.isClosed">
+            <button
+                class="button"
+                @click="$emit('withdraw', deposit.id)"
+                :disabled="deposit.isClosed"
+            >
                 Withdraw all
             </button>
         </div>
