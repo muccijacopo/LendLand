@@ -5,7 +5,7 @@ LendLand is a P2P Lending Decentralzied Web Application built on top of Ethereum
 ### Development
 #### Blockchain
 1. Clone this repo
-    git clone https://github.com/muccijacopo/LendLand.git
+        git clone https://github.com/muccijacopo/LendLand.git
 2. Install Truffle depndencies
     npm install
 3. Compile contracts and run migration
