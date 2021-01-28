@@ -1,9 +1,9 @@
 <template>
     <div class="card">
         <div class="card-content">
-            <p>Richiesto {{ loan.amount }} ETH</p>
-            <p>Da restituire {{ loan.amountWithInterest }} ETH</p>
-            <p>Data {{ loanDate }}</p>
+            <p>Richiesto: {{ loan.amount }} ETH</p>
+            <p>Da restituire: {{ !loan.isClosed ? loan.amountWithInterest : 0 }} ETH</p>
+            <p>Richiesto il: {{ loanDate }}</p>
             <button @click="$emit('repayLoan', loan.id)" :disabled="loan.isClosed">
                 Ripaga
             </button>

@@ -1,9 +1,9 @@
 <template>
     <div class="card">
         <div class="card-content">
-            <p>Depositato {{ deposit.amount }} ETH</p>
-            <p>Valore attuale {{ deposit.amountWithInterest }} ETH</p>
-            <p>Data {{ depositDate }}</p>
+            <p>Depositato: {{ deposit.amount }} ETH</p>
+            <p>Valore attuale: {{ deposit.amountWithInterest }} ETH</p>
+            <p>Effettuato il: {{ depositDate }}</p>
             <button
                 class="button"
                 @click="$emit('withdraw', deposit.id)"

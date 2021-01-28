@@ -7,13 +7,25 @@
         </div>
         <div class="navbar-end">
             <div class="navbar-item">
-                <span>{{ account }}</span>
+                <span>Account: {{ account }}</span>
             </div>
         </div>
     </header>
 
     <main class="container content my-3">
-        <h1 class="has-text-centered is-size-1">{{ totalBalance }} ETH</h1>
+        <div class="is-flex is-align-items-center">
+            <h1
+                class="has-text-centered"
+                style="font-size: 5rem; margin: 2.5rem auto; overflow-wrap: break-word"
+            >
+                <img src="@/assets/eth_icon.png" style="width: 60px; height: 60px" />
+                {{ totalBalance }} ETH
+            </h1>
+        </div>
+
+        <h4 class="has-text-centered">
+            Deposita e guadagna interessi <br />oppure richiedi un prestito
+        </h4>
         <div class="is-flex is-justify-content-center">
             <button
                 class="mr-2"
@@ -28,10 +40,22 @@
         </div>
         <div class="field my-3">
             <!-- <label class="label">Desposita o richiedi ETH</label> -->
-            <div class="control">
-                <input class="input" v-model="value" @keyup.enter="onEnter" />
-            </div>
+            <p class="control has-icons-left">
+                <input class="input mb-1" v-model="value" @keyup.enter="onEnter" />
+                <span class="icon is-small is-left">
+                    <img src="@/assets/eth_icon.png" style="height: 20px" />
+                </span>
+                <button
+                    class="button w-100 is-info"
+                    @click="onEnter"
+                    :disabled="selected == 'loan' && value > parseInt(totalBalance)"
+                >
+                    Conferma
+                </button>
+            </p>
         </div>
+
+        <hr />
         <h3 v-if="deposits.length">I tuoi investimenti</h3>
         <div class="grid">
             <deposit-card
@@ -41,6 +65,7 @@
                 @withdraw="withdraw($event)"
             ></deposit-card>
         </div>
+        <hr />
         <h3 v-if="loans.length">I tuoi prestiti</h3>
         <div class="grid">
             <loan-card
