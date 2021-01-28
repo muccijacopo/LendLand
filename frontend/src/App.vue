@@ -2,7 +2,8 @@
     <header class="navbar is-info">
         <div class="navbar-brand">
             <div class="navbar-item">
-                <h1>P2P Lending Dapp</h1>
+                <h1>LendLand</h1>
+                <!-- <span style="font-size: 10px">P2P Lending Dapp</span> -->
             </div>
         </div>
         <div class="navbar-end">
@@ -152,6 +153,7 @@ export default defineComponent({
 header {
     .navbar-brand {
         font-size: 2rem;
+        cursor: pointer;
     }
 }
 
