@@ -47,13 +47,21 @@ contract Bank {
         return depositValue;
     }
 
-    // Not yet supported WTF
+    function isDepositClosed(address _address, uint depositId) public view returns(bool) {
+        bool isClosed = deposits[_address][depositId].isClosed;
+        return isClosed;
+    }
+
+
+    /* 
+        This type of return is not yet supported 
+    */
     // function getDepositsByAccount(address _address) public view returns(Deposit[] memory) {
     //     Deposit[] memory accountDeposits = deposits[_address];
     //     return accountDeposits;
     // }
 
-    function getAmountWithInterest(uint amount, uint dateLeft, uint dateRight, uint multiplier) internal pure returns(uint) {
+    function getAmountWithInterest(uint amount, uint dateLeft, uint dateRight, uint multiplier) public pure returns(uint) {
         uint secondPassed = dateLeft - dateRight;
         uint amountWithInterest = amount + (secondPassed * multiplier);
         return amountWithInterest;
@@ -123,7 +131,24 @@ contract Bank {
         return (originalAmounts, amountsWithInterest, dates, isClosedAry);
     }
 
+    function getLoanOriginalAmountById(address _address, uint loanId) public view returns (uint) {
+        uint amount = loans[_address][loanId].amount;
+        return amount;
+    }
+
+    function isLoanClosed(address _address, uint loanId) public view returns (bool) {
+        bool isClosed = loans[_address][loanId].isClosed;
+        return isClosed;
+    }
+
+    function getLoanDate(address _address, uint loanId) public view returns (uint) {
+        uint amount = loans[_address][loanId].date;
+        return amount;
+    }
+
     function requestLoan(uint amount, uint date) public {
+        require(address(this).balance > amount, "Not enough liquidity");
+
         msg.sender.transfer(amount);
         totalBalance -= amount;
         Loan memory newLoan = Loan(msg.sender, amount, date, false);
@@ -131,10 +156,12 @@ contract Bank {
     }
 
     function repayLoan(uint loanId, uint date) public payable {
-        // uint originalAmount = loans[msg.sender][loanId].amount;
-        // uint loanDate = loans[msg.sender][loanId].date;
-        // uint amountWithInterest = getAmountWithInterest(originalAmount, loanDate, date, 1000);
-        // require(msg.value == amountWithIntest, "Need more money!");
+        uint originalAmount = loans[msg.sender][loanId].amount;
+        uint loanDate = loans[msg.sender][loanId].date;
+        bool isClosed = loans[msg.sender][loanId].isClosed;
+        require(!isClosed, "Cannot repay already closed loan");
+        uint amountWithInterest = getAmountWithInterest(originalAmount, date, loanDate, 1000);
+        require(msg.value >= amountWithInterest, "Too low amount to repay loan");
         totalBalance += msg.value;
         loans[msg.sender][loanId].isClosed = true;
     }
